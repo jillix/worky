@@ -13,7 +13,7 @@
 
     console.log("Sending data to the worker via 'another event'");
     // Listen for a specific event
-    w.write("another event", {
+    w.emit("another event", {
         "hello": "world"
     });
 })();
