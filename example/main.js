@@ -1,13 +1,8 @@
 (function () {
     var w = new Worky("worker.js");
 
-    // Get all events
-    w.data(function (ev, data) {
-        console.log("Got data: ", data);
-    });
-
     // Listen for a specific event
-    w.data("some event", function (ev, data) {
+    w.on("some event", function (ev, data) {
         console.log("Got some event and its data", data);
     });
 

@@ -4,7 +4,7 @@
 
     function Worky(script) {
 
-        if (this.constructor !== Worky) {
+        if (this.constructor !== Worky && script) {
             return new Worky(script);
         }
 
@@ -23,9 +23,7 @@
                 });
             });
         } else {
-            // root.onmessage = function (ev) {
-
-            // };
+            this.worker.postmessage(new Worky.Message("_init"));
         }
     }
 
@@ -35,7 +33,7 @@
         this.data = data;
     };
 
-    Worky.prototype.data = function (ev, fn) {
+    Worky.prototype.on = function (ev, fn) {
         var l = this.listeners[ev] = this.listeners[ev] || [];
         l.push(fn);
         return this;
