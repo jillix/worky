@@ -52,9 +52,6 @@
                 ev.data = Object(ev.data);
                 self.emit(ev, ev.data.event, ev.data);
             };
-            self.on("__init", function (ev, data) {
-                debugger
-            });
         } else {
             self.emit = function (ev, data) {
                 root.postMessage(new Worky.Message(ev, data));
