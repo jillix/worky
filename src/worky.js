@@ -10,18 +10,26 @@
         return this;
     };
 
-    EventListener.prototype.emit = function (_ev, ev, data) {
+    EventListener.prototype.emit = function (ev) {
         var self = this
-          , l = this._[ev]
-          , args = Array.prototype.slice.call(arguments, 2)
+          , args = []
+          , event = null
+          , l = null
           ;
 
-        if (!l || !l.length) {
-            return this;
+        if (typeof ev === "object") {
+            event = ev.event;
+            args = ev.args;
+        } else {
+            event = ev;
+            args = Array.prototype.slice.call(arguments, 1)
         }
 
+        l = this._[event];
+        if (!l || !l.length) { return; }
+
         l.forEach(function (fn) {
-            fn.apply(_ev, args);
+            fn.apply(self, args);
         });
     };
 
@@ -44,27 +52,42 @@
         EventListener.call(self);
         self.is_worker = !script;
 
-        // Initialize the worker interface
-        if (script) {
-            self.worker = new Worker(script);
-            self.worker.worky = this;
-            self.worker.onmessage = function (ev) {
-                ev.data = Object(ev.data);
-                self.emit(ev, ev.data.event, ev.data);
-            };
-        } else {
-            self.emit = function (ev, data) {
-                root.postMessage(new Worky.Message(ev, data));
-            };
+        // We are inside of a worker
+        if (!script) {
+            root.onmessage = Worky.receiver.call(self);
+            self.emit = Worky.emitter.call(root, true);
             return self;
+        }
+
+        // Inside of a window, creating a worker
+        self.worker = new Worker(script);
+        self.worker.worky = this;
+        self.worker.onmessage = Worky.receiver.call(self);
+        //self.emit = Worky.emitter.call(self.worker, true);
+    }
+
+    Worky.receiver = function () {
+        var self = this;
+        return function (ev) {
+            self.emit(ev.data);
+        };
+    };
+
+    Worky.emitter = function () {
+        var self = this;
+        return function () {
+            var ev = new Worky.Message(arguments);
+            self.postMessage(ev);
         }
     }
 
     Worky.prototype = Object.create(EventListener.prototype);
     Worky.prototype.constructor = Worky;
-    Worky.Message = function (ev, data) {
-        this.event = ev;
-        this.data = data;
+    Worky.Message = function (args) {
+        args = Array.prototype.slice.call(args);
+        //this._ = args[0];
+        this.event = args[0];
+        this.args = args.slice(1);
     };
 
 
