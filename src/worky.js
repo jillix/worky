@@ -1,16 +1,59 @@
 (function (root) {
 
-    function EventListener() {
+    /**
+     * EventEmitter
+     * Creates a new `EventEmitter` instance. This is exposed via `Worky.EventEmitter`.
+     *
+     * @name EventEmitter
+     * @function
+     * @return {EventEmitter} The `EventEmitter` instance.
+     */
+    function EventEmitter() {
         this._ = {};
     }
 
-    EventListener.prototype._on = function (ev, fn) {
+    /**
+     * _on
+     * The core `on` method. By default `on` is the same with `_on`.
+     * However, `on` can be rewritten, but `_on` is still the same.
+     *
+     * @name _on
+     * @function
+     * @param {String} ev The event name.
+     * @param {Function} fn The listener function.
+     * @return {EventEmitter} The `EventEmitter` instance.
+     */
+    EventEmitter.prototype._on = function (ev, fn) {
         var l = this._[ev] = this._[ev] || [];
         l.push(fn);
         return this;
     };
 
-    EventListener.prototype._emit = function (ev) {
+    /**
+     * _emit
+     * Emits the passed arguments. By default `emit` is the same with `_emit`.
+     * However, `emit` can be rewritten, but `_emit` is still the same.
+     *
+     * Usage:
+     *
+     * ```js
+     * // Using arguments - this is the convenient way
+     * worker.emit("eventName", 42, { some: "object" }, "foo");
+     *
+     * // Internally, this method is used:
+     * worker.emit({
+     *     event: "eventName"
+     *   , args: [42, { some: "object" }, "foo"]
+     * });
+     * ```
+     *
+     * @name _emit
+     * @function
+     * @param {String|Worky.Message} ev The event name or a `Worky.Message` object.
+     * @return {EventEmitter} The `EventEmitter` instance.
+     */
+    EventEmitter.prototype._emit = function (ev) {
+
         var self = this
           , args = []
           , event = null
@@ -31,51 +74,91 @@
         l.forEach(function (fn) {
             fn.apply(self, args);
         });
+
+        return this;
     };
 
-    EventListener.prototype.on = EventListener.prototype._on;
-    EventListener.prototype.emit = EventListener.prototype._emit;
+    EventEmitter.prototype.on = EventEmitter.prototype._on;
+    EventEmitter.prototype.emit = EventEmitter.prototype._emit;
 
-    var _workers = {};
-
-    function Worky(script, loaded) {
+    /**
+     * Worky
+     * Creates or initializes a web worker. This is inherited from
+     * the `EventEmitter` class.
+     *
+     * Usage:
+     *
+     * ```js
+     * // In the main thread (window)
+     * var worker = new Worky("some-worker.js");
+     *
+     * // In the worker thread (some-worker.js)
+     * var worker = new Worky();
+     * ```
+     *
+     * @name Worky
+     * @function
+     * @param {String} script The worker file name.
+     * @return {Worky} The `Worky` instance.
+     */
+    function Worky(script) {
 
         var self = {};
 
         if (this.constructor !== Worky && script) {
-            return new Worky(script, loaded);
+            return new Worky(script);
         }
 
         if (!script) {
-            self = Object.create(EventListener.prototype);
+            self = Object.create(EventEmitter.prototype);
         } else {
             self = this;
         }
 
-        EventListener.call(self);
+        EventEmitter.call(self);
         self.is_worker = !script;
 
+        // Initialize the emit and onmessage handlers
+        self.emit = Worky.Emitter.call(self.is_worker ? root : self.worker);
+        root.onmessage = Worky.Receiver.call(self);
+
         // We are inside of a worker
-        if (!script) {
-            root.onmessage = Worky.receiver.call(self);
-            self.emit = Worky.emitter.call(root);
+        if (self.is_worker) {
             return self;
         }
 
         // Inside of a window, creating a worker
         self.worker = new Worker(script);
-        self.worker.onmessage = Worky.receiver.call(self);
-        self.emit = Worky.emitter.call(self.worker);
+        self.worker.onmessage = Worky.Receiver.call(self);
     }
 
-    Worky.receiver = function () {
+    // Expose the EventEmitter class
+    Worky.EventEmitter = EventEmitter;
+
+    /**
+     * Worky.Receiver
+     * Creates the `onmessage` handler. This method is used internally.
+     *
+     * @name Worky.Receiver
+     * @function
+     * @return {Function} The receiver handler which calls the core `_emit` function.
+     */
+    Worky.Receiver = function () {
         var self = this;
         return function (ev) {
             self._emit(ev.data);
         };
     };
 
-    Worky.emitter = function () {
+    /**
+     * Worky.Emitter
+     * Creates the `emit` handler. This method is used internally.
+     *
+     * @name Worky.Emitter
+     * @function
+     * @return {Function} The emitter handler which calls the `postMessage` function.
+     */
+    Worky.Emitter = function () {
         var self = this;
         return function () {
             var ev = new Worky.Message(arguments);
@@ -83,14 +166,25 @@
         }
     }
 
-    Worky.prototype = Object.create(EventListener.prototype);
-    Worky.prototype.constructor = Worky;
+    /**
+     * Worky.Message
+     * Creates a new `Message` instance
+     *
+     * @name Worky.Message
+     * @function
+     * @param {Arguments} args The arguments pseudo-array.
+     * @return {Worky.Message} The `Message` instance containing the following fields:
+     */
     Worky.Message = function (args) {
         args = Array.prototype.slice.call(args);
         //this._ = args[0];
         this.event = args[0];
         this.args = args.slice(1);
     };
+
+    // Inherit the EventEmitter functions
+    Worky.prototype = Object.create(EventEmitter.prototype);
+    Worky.prototype.constructor = Worky;
 
 
     root.Worky = Worky;
