@@ -118,18 +118,17 @@
         EventEmitter.call(self);
         self.is_worker = !script;
 
-        // Initialize the emit and onmessage handlers
-        self.emit = Worky.Emitter.call(self.is_worker ? root : self.worker);
-        root.onmessage = Worky.Receiver.call(self);
-
         // We are inside of a worker
         if (self.is_worker) {
+            root.onmessage = Worky.Receiver.call(self);
+            self.emit = Worky.Emitter.call(root);
             return self;
         }
 
         // Inside of a window, creating a worker
         self.worker = new Worker(script);
         self.worker.onmessage = Worky.Receiver.call(self);
+        self.emit = Worky.Emitter.call(self.worker);
     }
 
     // Expose the EventEmitter class
