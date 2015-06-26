@@ -1,5 +1,7 @@
 (function () {
-    var w = new Worky("worker.js");
+    var w = new Worky("worker.js")
+      , w2 = new Worky("worker2.js")
+      ;
 
     // Listen for events from worker
     w.on("some event", function (data) {
@@ -13,4 +15,13 @@
     w.emit("another event", {
         "hello": "world"
     });
+
+    // Listen for events from worker2
+    w2.on("some event", function (two, numbers) {
+        console.log("worker2->window received (some event):", two, numbers);
+    });
+
+    // Emit something to the second worker
+    console.log("window->worker2 (hello to worker2)");
+    w2.emit("hello to worker2", { magic: 42 });
 })();
