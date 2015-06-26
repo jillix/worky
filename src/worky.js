@@ -1,4 +1,4 @@
-/**
+/*!
  * worky
  * An EventEmitter like interface for web-workers.
  *
