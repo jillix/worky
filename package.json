@@ -1,0 +1,27 @@
+{
+  "name": "worky",
+  "version": "0.0.0",
+  "description": "An EventEmitter like interface for web-workers.",
+  "main": "src/worky.js",
+  "directories": {
+    "example": "example"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:jillix/worky.git"
+  },
+  "keywords": [
+    "worky",
+    "web-workers",
+    "event-emitter"
+  ],
+  "author": "jillix <contact@jillix.com> (http://jillix.com)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jillix/worky/issues"
+  },
+  "homepage": "https://github.com/jillix/worky"
+}
