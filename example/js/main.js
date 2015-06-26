@@ -1,6 +1,6 @@
 (function () {
-    var w = new Worky("worker.js")
-      , w2 = new Worky("worker2.js")
+    var w = new Worky("js/worker.js")
+      , w2 = new Worky("js/worker2.js")
       ;
 
     // Listen for events from worker

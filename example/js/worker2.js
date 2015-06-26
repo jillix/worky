@@ -1,5 +1,5 @@
 // import worky
-importScripts("../src/worky.js");
+importScripts("worky.js");
 
 // Create the event interface
 var worker = Worky();

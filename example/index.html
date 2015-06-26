@@ -1,12 +1,120 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
-        <meta http-equiv="content-type" content="text/html; charset=utf-8">
-        <title>Worky Example</title>
-        <script type="text/javascript" src="../src/worky.js"></script>
-        <script type="text/javascript" src="main.js"></script>
+        <meta charset="UTF-8">
+        <title>worky</title>
+
+        <!-- Mobile support -->
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!-- Twitter Bootstrap -->
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- Material Design for Bootstrap -->
+        <link href="css/material-wfont.min.css" rel="stylesheet">
+        <link href="css/ripples.min.css" rel="stylesheet">
+        <link href="css/custom.css" rel="stylesheet">
+
+        <!-- Font Awesome -->
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/default.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
+
+        <script src="js/worky.js"></script>
+        <script src="js/main.js"></script>
     </head>
     <body>
+        <a href="https://github.com/jillix/worky"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://camo.githubusercontent.com/82b228a3648bf44fc1163ef44c62fcc60081495e/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f6c6566745f7265645f6161303030302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_left_red_aa0000.png"></a>
+        <header>
+            <div class="container text-left">
+                <h1 class="title">worky <span class="version"></span></h1>
+                <p>An <code>EventEmitter</code> like interface for web-workers.</p>
+                <a class="btn btn-danger" href="https://github.com/jillix/worky/zipball/master">
+                    <i class="fa fa-cloud-download"></i> Download .zip
+                </a>
+                <a class="btn btn-danger" href="https://github.com/jillix/worky/tarball/master">
+                    <i class="fa fa-file-archive-o"></i> Download .tar.gz
+                </a>
+                <a class="btn btn-danger" href="https://github.com/jillix/worky/">
+                    <i class="fa fa-github"></i> View on GitHub
+                </a>
+            </div>
+        </header>
+        <article>
+            <div class="container">
+                <h2>Demo</h2>
+                <div class="row">
+                    <div class="col-lg-6"><pre>// The main thread (main.js)
+(function () {
+    var w = new Worky("worker.js")
+      , w2 = new Worky("worker2.js")
+      ;
 
+    // Listen for events from worker
+    w.on("some event", function (data) {
+        console.log("worker-&gt;window received (some event):", data);
+    }).on("hello world", function (data) {
+        console.log("worker-&gt;window received (hello world):", data);
+    });
+
+    // Emit something to the worker
+    console.log("window-&gt;worker (another event)");
+    w.emit("another event", {
+        "hello": "world"
+    });
+
+    // Listen for events from worker2
+    w2.on("some event", function (two, numbers) {
+        console.log("worker2-&gt;window received (some event):", two, numbers);
+    });
+
+    // Emit something to the second worker
+    console.log("window-&gt;worker2 (hello to worker2)");
+    w2.emit("hello to worker2", { magic: 42 });
+})();
+
+// worker.js
+// import worky
+importScripts("../src/worky.js");
+
+// Create the event interface
+var worker = Worky();
+
+// Emit something back to the window
+worker.emit("hello world", { "yes!": "it works!" });
+
+// Listen for events from window
+worker.on("another event", function (data) {
+    worker.emit("some event", data);
+});
+
+// worker2.js
+// import worky
+importScripts("../src/worky.js");
+
+// Create the event interface
+var worker = Worky();
+
+// Listen for events from window
+worker.on("hello to worker2", function (data) {
+    worker.emit("some event", data.magic, 7);
+});</pre>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="graph"></div>
+                    </div>
+                </div>
+                <script>
+                    hljs.highlightBlock(document.querySelector("pre"));
+                </script>
+                <a class="btn btn-lg btn-danger btn-block" href="https://github.com/jillix/worky/">Check out the documentation on GitHub.</a>
+            </div>
+        </article>
+        <footer>
+            <div class="container">
+                <i class="fa fa-code"></i> with <i class="fa fa-heart"></i> and JavaScript by the <strong><a href="https://github.com/jillix">@jillix</a></strong> developers.
+            </div>
+        </footer>
     </body>
 </html>
