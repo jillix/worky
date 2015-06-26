@@ -1,7 +1,13 @@
-(function () {
+window.addEventListener("load", function () {
+
+    ConsoleJS.init({
+        selector: "#result"
+    });
+
     var w = new Worky("js/worker.js")
       , w2 = new Worky("js/worker2.js")
       ;
+
 
     // Listen for events from worker
     w.on("some event", function (data) {
@@ -24,4 +30,4 @@
     // Emit something to the second worker
     console.log("window->worker2 (hello to worker2)");
     w2.emit("hello to worker2", { magic: 42 });
-})();
+});
