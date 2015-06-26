@@ -57,21 +57,15 @@
 
         // We are inside of a worker
         if (!script) {
-            root.onmessage = function (ev) {
-               debugger
-            }; //Worky.receiver.call(self);
-            self.emit = Worky.emitter.call(root, true);
+            root.onmessage = Worky.receiver.call(self);
+            self.emit = Worky.emitter.call(root);
             return self;
         }
 
         // Inside of a window, creating a worker
         self.worker = new Worker(script);
-        self.worker.onload = function () {
-            debugger
-            self._emit("load");
-        };
         self.worker.onmessage = Worky.receiver.call(self);
-        self.emit = Worky.emitter.call(self.worker, true);
+        self.emit = Worky.emitter.call(self.worker);
     }
 
     Worky.receiver = function () {
