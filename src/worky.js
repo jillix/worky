@@ -1,5 +1,9 @@
 (function (root) {
 
+    if (typeof window === "object" && !window.Worker) {
+        return alert("This browser does not support web workers.");
+    }
+
     /**
      * EventEmitter
      * Creates a new `EventEmitter` instance. This is exposed via `Worky.EventEmitter`.
