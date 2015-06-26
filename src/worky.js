@@ -79,7 +79,7 @@
             args = ev.args;
         } else {
             event = ev;
-            args = Array.prototype.slice.call(arguments, 1)
+            args = Array.prototype.slice.call(arguments, 1);
         }
 
         l = this._[event];
@@ -176,8 +176,8 @@
         return function () {
             var ev = new Worky.Message(arguments);
             self.postMessage(ev);
-        }
-    }
+        };
+    };
 
     /**
      * Worky.Message
