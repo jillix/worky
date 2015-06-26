@@ -4,13 +4,13 @@
         this._ = {};
     }
 
-    EventListener.prototype.on = function (ev, fn) {
+    EventListener.prototype._on = function (ev, fn) {
         var l = this._[ev] = this._[ev] || [];
         l.push(fn);
         return this;
     };
 
-    EventListener.prototype.emit = function (ev) {
+    EventListener.prototype._emit = function (ev) {
         var self = this
           , args = []
           , event = null
@@ -33,14 +33,17 @@
         });
     };
 
+    EventListener.prototype.on = EventListener.prototype._on;
+    EventListener.prototype.emit = EventListener.prototype._emit;
+
     var _workers = {};
 
-    function Worky(script) {
+    function Worky(script, loaded) {
 
         var self = {};
 
         if (this.constructor !== Worky && script) {
-            return new Worky(script);
+            return new Worky(script, loaded);
         }
 
         if (!script) {
@@ -54,22 +57,27 @@
 
         // We are inside of a worker
         if (!script) {
-            root.onmessage = Worky.receiver.call(self);
+            root.onmessage = function (ev) {
+               debugger
+            }; //Worky.receiver.call(self);
             self.emit = Worky.emitter.call(root, true);
             return self;
         }
 
         // Inside of a window, creating a worker
         self.worker = new Worker(script);
-        self.worker.worky = this;
+        self.worker.onload = function () {
+            debugger
+            self._emit("load");
+        };
         self.worker.onmessage = Worky.receiver.call(self);
-        //self.emit = Worky.emitter.call(self.worker, true);
+        self.emit = Worky.emitter.call(self.worker, true);
     }
 
     Worky.receiver = function () {
         var self = this;
         return function (ev) {
-            self.emit(ev.data);
+            self._emit(ev.data);
         };
     };
 
