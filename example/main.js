@@ -1,7 +1,6 @@
 (function () {
-    var w = new Worky("worker.js", function () {
+    var w = new Worky("worker.js");
 
-    });
     // Listen for a specific event
     w.on("some event", function (data) {
         console.log("Got some event and its data", data);
