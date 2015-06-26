@@ -19,8 +19,42 @@ An EventEmitter like interface for web-workers.
 
 ## Installation
 
-```sh
-$ npm i worky
+Include the `worky.min.js` (or `worky.js`) into your page:
+
+```html
+<script src="path/to/worky.min.js"></script>
+```
+
+This creates the `Worky` global.
+
+## Usage
+To understand this you must know what [web workers are](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers).
+
+### Main thread (`window`)
+
+This is how you use `Worky` in the main thread:
+
+```js
+var worker = new Worky("some-worker.js");
+worker.on("eventName", function (some, data) {
+    /* do something with data coming from the worker thread */
+});
+worker.emit("someEvent", and, some, data);
+```
+
+Basically, you can emit and listen (for) things to/from the worker.
+
+### Worker thread
+When you are inside of the worker thread, you have to import the `worky.js` script.
+
+```js
+importScript("path/to/worky.js");
+
+var worker = Worky();
+worker.on("someEvent", function (and, some, data) {
+   /* do something with data coming from the main thread*/
+});
+worker.emit("eventName", some, data);
 ```
 
 ## Documentation
@@ -105,6 +139,8 @@ Creates a new `Message` instance
 
 #### Return
 - **Worky.Message** The `Message` instance containing the following fields:
+ - `event` (String): The event name.
+ - `args` (Array): An array of elements representing the event data.
 
 ## How to contribute
 Have an idea? Found a bug? See [how to contribute][contributing].
