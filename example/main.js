@@ -1,18 +1,16 @@
 (function () {
     var w = new Worky("worker.js");
 
-    // Listen for a specific event
+    // Listen for events from worker
     w.on("some event", function (data) {
-        console.log("Got some event and its data", data);
-        console.log("Sending data to the worker via 'another event'");
-        // Listen for a specific event
-        debugger
-        w.emit("another event", {
-            "hello": "world"
-        });
+        console.log("worker->window received (some event):", data);
+    }).on("hello world", function (data) {
+        console.log("worker->window received (hello world):", data);
     });
 
-    w.on("hello world", function (data) {
-        console.log(data);
+    // Emit something to the worker
+    console.log("window->worker (another event)");
+    w.emit("another event", {
+        "hello": "world"
     });
 })();
