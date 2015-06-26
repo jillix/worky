@@ -1,3 +1,13 @@
+/**
+ * worky
+ * An EventEmitter like interface for web-workers.
+ *
+ * This module was created by the @jillix developers, with <3 and JS!
+ * The code is licensed under the MIT license.
+ *
+ * Check out the repository on GitHub: https://github.com/jillix/worky
+ *
+ * */
 (function (root) {
 
     if (typeof window === "object" && !window.Worker) {
