@@ -187,6 +187,9 @@
      * @function
      * @param {Arguments} args The arguments pseudo-array.
      * @return {Worky.Message} The `Message` instance containing the following fields:
+     *
+     *  - `event` (String): The event name.
+     *  - `args` (Array): An array of elements representing the event data.
      */
     Worky.Message = function (args) {
         args = Array.prototype.slice.call(args);
