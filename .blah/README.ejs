@@ -46,8 +46,42 @@
 <% // INSTALLATION %>
 ## Installation
 
-```sh
-$ npm i <%- _.pack.name %>
+Include the `worky.min.js` (or `worky.js`) into your page:
+
+```html
+<script src="path/to/worky.min.js"></script>
+```
+
+This creates the `Worky` global.
+
+## Usage
+To understand this you must know what [web workers are](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers).
+
+### Main thread (`window`)
+
+This is how you use `Worky` in the main thread:
+
+```js
+var worker = new Worky("some-worker.js");
+worker.on("eventName", function (some, data) {
+    /* do something with data coming from the worker thread */
+});
+worker.emit("someEvent", and, some, data);
+```
+
+Basically, you can emit and listen (for) things to/from the worker.
+
+### Worker thread
+When you are inside of the worker thread, you have to import the `worky.js` script.
+
+```js
+importScript("path/to/worky.js");
+
+var worker = Worky();
+worker.on("someEvent", function (and, some, data) {
+   /* do something with data coming from the main thread*/
+});
+worker.emit("eventName", some, data);
 ```
 
 <% // Cli usage %>
