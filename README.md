@@ -13,6 +13,8 @@
 <!-- * * * Thanks! * * *                                                    -->
 <!---------------------------------------------------------------------------->
 
+![worky](http://i.imgur.com/soYNsAZ.png)
+
 # worky
 
 An EventEmitter like interface for web-workers.
