@@ -30,7 +30,7 @@ Include the `worky.min.js` (or `worky.js`) into your page:
 This creates the `Worky` global.
 
 ## Usage
-To understand this you must know what [web workers are](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers).
+To understand this, you must know what [web workers are](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers).
 
 ### Main thread (`window`)
 
