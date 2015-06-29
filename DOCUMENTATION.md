@@ -56,7 +56,7 @@ var worker = new Worky();
 ```
 
 #### Params
-- **String** `script`: The worker file name.
+- **String|Worker** `script`: The worker script url or the worker object itself.
 
 #### Return
 - **Worky** The `Worky` instance.
@@ -81,4 +81,6 @@ Creates a new `Message` instance
 
 #### Return
 - **Worky.Message** The `Message` instance containing the following fields:
+ - `event` (String): The event name.
+ - `args` (Array): An array of elements representing the event data.
 
