@@ -48,8 +48,9 @@
                 <div class="row">
                     <div class="col-lg-6"><pre>// The main thread (main.js)
 (function () {
-    var w = new Worky("worker.js")
-      , w2 = new Worky("worker2.js")
+    var w = new Worky("js/worker.js")
+      , workerObj = new Worker("js/worker2.js")
+      , w2 = new Worky(workerObj)
       ;
 
     // Listen for events from worker
