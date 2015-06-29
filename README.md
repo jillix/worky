@@ -116,7 +116,7 @@ var worker = new Worky();
 ```
 
 #### Params
-- **String** `script`: The worker file name.
+- **String|Worker** `script`: The worker script url or the worker object itself.
 
 #### Return
 - **Worky** The `Worky` instance.
