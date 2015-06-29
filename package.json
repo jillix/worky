@@ -1,6 +1,6 @@
 {
   "name": "worky",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "An EventEmitter like interface for web-workers.",
   "main": "src/worky.js",
   "directories": {
@@ -24,7 +24,7 @@
     "url": "https://github.com/jillix/worky/issues"
   },
   "blah": {
-      "h_img": "http://i.imgur.com/soYNsAZ.png"
+    "h_img": "http://i.imgur.com/soYNsAZ.png"
   },
   "homepage": "https://github.com/jillix/worky"
 }
