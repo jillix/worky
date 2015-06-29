@@ -19,6 +19,11 @@
 
 An EventEmitter like interface for web-workers.
 
+## Demo
+[Click here](https://jillix.github.io/worky/) or the image below to check out a live example.
+
+[![Worky Demo](http://i.imgur.com/npXAmER.jpg)](https://jillix.github.io/worky/)
+
 ## Installation
 
 Include the `worky.min.js` (or `worky.js`) into your page:
