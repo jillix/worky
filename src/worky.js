@@ -112,7 +112,7 @@
      *
      * @name Worky
      * @function
-     * @param {String} script The worker file name.
+     * @param {String|Worker} script The worker script url or the worker object itself.
      * @return {Worky} The `Worky` instance.
      */
     function Worky(script) {
@@ -140,7 +140,12 @@
         }
 
         // Inside of a window, creating a worker
-        self.worker = new Worker(script);
+        if (typeof script === "string") {
+            self.worker = new Worker(script);
+        } else {
+            self.worker = script;
+        }
+
         self.worker.onmessage = Worky.Receiver.call(self);
         self.emit = Worky.Emitter.call(self.worker);
     }
