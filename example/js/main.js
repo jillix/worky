@@ -5,7 +5,8 @@ window.addEventListener("load", function () {
     });
 
     var w = new Worky("js/worker.js")
-      , w2 = new Worky("js/worker2.js")
+      , workerObj = new Worker("js/worker2.js")
+      , w2 = new Worky(workerObj)
       ;
 
 
